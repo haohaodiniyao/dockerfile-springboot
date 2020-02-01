@@ -43,7 +43,7 @@
     </appender>
 
     <appender name="DETAIL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/charge-detail.log</file>
+        <file>${LOG_HOME}/detail.log</file>
         <!-- 排除ERROR日志 -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
