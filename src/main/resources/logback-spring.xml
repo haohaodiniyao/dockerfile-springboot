@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 日志级别 优先级由高到低 ERROR WARN INFO DEBUG -->
+    <!--日志存储地址-->
+    <property name="LOG_HOME" value="/u01/logs"/>
+    <!--
+    %d 日期
+    %t 线程
+    %p 日志级别
+    %c{0} 类名
+    %c 类全名
+    %X{traceId} 输出traceId并且没有默认值
+    %m 输出代码中指定的讯息，如log(message)中的message
+    %n 输出一个换行符号
+    -->
+    <property name="log_pattern" value="[%d{yyyy-MM-dd.HH:mm:ss.SSS}][%t][%p][%c{0}][%X{traceId}] : %m%n"/>
+    <!--输出到控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 打印ERROR WARN INFO -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <Pattern>${log_pattern}</Pattern>
+            <!-- 设置字符集 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/error.log</file>
+        <!-- 打印ERROR日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/error.log.%d{yyyyMMddHH}.gz</FileNamePattern>
+            <MaxHistory>2</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log_pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="DETAIL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/charge-detail.log</file>
+        <!-- 排除ERROR日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/detail.log.%d{yyyyMMddHH}.gz</FileNamePattern>
+            <MaxHistory>2</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log_pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"></appender-ref>
+        <appender-ref ref="ERROR"></appender-ref>
+        <appender-ref ref="DETAIL"></appender-ref>
+    </root>
+</configuration>
